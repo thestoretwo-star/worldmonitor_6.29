@@ -71,6 +71,11 @@ COPY --from=builder /app/data ./data
 # Built frontend static files
 COPY --from=builder /app/dist /usr/share/nginx/html
 
+# Railway/Nginx root fix:
+# Your Vite build outputs dashboard.html, but Nginx expects index.html for "/".
+# This prevents "directory index of /usr/share/nginx/html/ is forbidden".
+RUN cp /usr/share/nginx/html/dashboard.html /usr/share/nginx/html/index.html
+
 # Nginx + supervisord configs
 COPY docker/nginx.conf /etc/nginx/nginx.conf.template
 COPY docker/supervisord.conf /etc/supervisor/conf.d/worldmonitor.conf
